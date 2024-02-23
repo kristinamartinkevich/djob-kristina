@@ -1,0 +1,16 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+img {
+  width: 50px;
+}
+
+a {
+  font-weight: 500 !important;
+  color: #646cff !important;
+  cursor: pointer;
+}
