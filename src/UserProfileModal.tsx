@@ -1,18 +1,12 @@
 import { Button, Modal, Spinner, Table } from 'react-bootstrap';
-import { User } from './App.tsx'
 import { useEffect, useState } from 'react';
 import AlbumModal from './AlbumModal.tsx';
+import { Album, User } from './model.ts';
 
 interface UserProfileProps {
     show: boolean;
     onHideUserProfile: () => void;
     user: User;
-}
-
-export type Album = {
-    userId: number;
-    id: number;
-    title: string;
 }
 
 const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile, user }) => {
@@ -31,7 +25,7 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
     }
 
     useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/users/${user?.id}/albums`)
+        fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
             .then(response => response.json())
             .then(json => setAlbums(json))
             .catch(error => console.error(error));
@@ -59,13 +53,13 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                             <td>{user.email}</td>
                             <td>
                                 {albums ? (
-                                    <ul>
+                                    <ol>
                                         {albums.map((album, index) => (
                                             <li key={index}>
                                                 <a onClick={() => handleShowAlbum(album)}>{album.title}</a>
                                             </li>
                                         ))}
-                                    </ul>
+                                    </ol>
                                 ) : (
                                     <Spinner animation="border" />
                                 )}

@@ -3,35 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { Spinner, Table } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
-
-export type User = {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    geo: {
-      lat: string;
-      lng: string;
-    };
-  };
-  phone: string;
-  website: string;
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
-  };
-};
+import { User } from './model';
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
-  const [todosCount, setTodosCount] = useState<number>(0);
-  const [photosCount, setPhotosCount] = useState<number>(0);
+  const [todosCountMap, setTodosCountMap] = useState<{ [key: number]: number }>({});
+  const [photosCountMap, setPhotosCountMap] = useState<{ [key: number]: number }>({});
   const [pickedUser, setPickedUser] = useState<User>();
 
   const [showUser, setShowUser] = useState(false);
@@ -55,19 +32,32 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all(users.map(user =>
+      const todosResponse = await Promise.all(users.map(user =>
         fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user?.id}`)
           .then(response => response.json())
-          .then(json => setTodosCount(json.length))
           .catch(error => console.error(error))
       ));
 
-      await Promise.all(users.map(user =>
-        fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${user?.id}`)
+      const albumsResponse = await Promise.all(users.map(user =>
+        fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
           .then(response => response.json())
-          .then(json => setPhotosCount(json.length))
           .catch(error => console.error(error))
       ));
+
+      const todosCountMapData: { [key: number]: number } = {};
+      todosResponse.forEach((todos: any[], index) => {
+        const userId = users[index].id;
+        todosCountMapData[userId] = todos.length;
+      });
+
+      const photosCountMapData: { [key: number]: number } = {};
+      albumsResponse.forEach((photos: any[], index) => {
+        const userId = users[index].id;
+        photosCountMapData[userId] = photos.length;
+      });
+
+      setTodosCountMap(todosCountMapData);
+      setPhotosCountMap(photosCountMapData);
     };
 
     if (users.length > 0) {
@@ -89,7 +79,7 @@ function App() {
             <th>Number of Albums</th>
           </tr>
         </thead>
-        {users && todosCount && photosCount ? (
+        {users && todosCountMap && photosCountMap ? (
           <tbody>
             {users.map((user, index) => (
               <tr key={index}>
@@ -104,10 +94,8 @@ function App() {
                     {user.website}
                   </a></td>
                 <td>{user.company.name}</td>
-                <td>{todosCount}
-                </td>
-                <td>{photosCount}
-                </td>
+                <td>{todosCountMap[user.id]}</td>
+                <td>{photosCountMap[user.id]}</td>
               </tr>
             ))}
             {pickedUser && (

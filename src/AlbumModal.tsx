@@ -1,19 +1,11 @@
 import { Button, Modal, Spinner } from 'react-bootstrap';
-import { Album } from './UserProfileModal.tsx'
 import { useEffect, useState } from 'react';
+import { Album, AlbumData } from './model.ts';
 
 interface AlbumDataProps {
     show: boolean;
     onHideAlbum: () => void;
     album: Album;
-}
-
-export type AlbumData = {
-    albumId: number;
-    id: number;
-    title: string;
-    url: string;
-    thumbnailUrl: string;
 }
 
 const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
