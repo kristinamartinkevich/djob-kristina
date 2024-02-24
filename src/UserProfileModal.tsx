@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from 'react-bootstrap';
+import { Button, Modal, Spinner, Table } from 'react-bootstrap';
 import { User } from './App.tsx'
 import { useEffect, useState } from 'react';
 import AlbumModal from './AlbumModal.tsx';
@@ -18,16 +18,16 @@ export type Album = {
 const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile, user }) => {
     const [albums, setAlbums] = useState<Album[]>([]);
     const [pickedAlbum, setPickedAlbum] = useState<Album>();
-    const [showAlbum, setShowAlbums] = useState(false);
+    const [showAlbum, setShowAlbum] = useState(false);
 
     function handleCloseAlbum() {
         setPickedAlbum(undefined);
-        setShowAlbums(false);
+        setShowAlbum(false);
     }
 
     function handleShowAlbum(album: Album) {
         setPickedAlbum(album);
-        setShowAlbums(true);
+        setShowAlbum(true);
     }
 
     useEffect(() => {
@@ -58,13 +58,17 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                             <td>{user.username}</td>
                             <td>{user.email}</td>
                             <td>
-                                <ul>
-                                    {albums.map((album, index) => (
-                                        <li key={index}>
-                                            <a onClick={() => handleShowAlbum(album)}>{album.title}</a>
-                                        </li>
-                                    ))}
-                                </ul>
+                                {albums ? (
+                                    <ul>
+                                        {albums.map((album, index) => (
+                                            <li key={index}>
+                                                <a onClick={() => handleShowAlbum(album)}>{album.title}</a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <Spinner animation="border" />
+                                )}
                             </td>
                             {pickedAlbum && (
                                 <AlbumModal show={showAlbum} onHideAlbum={handleCloseAlbum} album={pickedAlbum} />
@@ -75,7 +79,7 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHideUserProfile}>
-                    Close
+                    Go back to Users list
                 </Button>
             </Modal.Footer>
         </Modal>

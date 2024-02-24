@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { Button, Spinner, Table } from 'react-bootstrap';
+import { Spinner, Table } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
 
 export type User = {
@@ -56,14 +56,14 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all(users.map(user =>
-        fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user.id}`)
+        fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user?.id}`)
           .then(response => response.json())
           .then(json => setTodosCount(json.length))
           .catch(error => console.error(error))
       ));
 
       await Promise.all(users.map(user =>
-        fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${user.id}`)
+        fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${user?.id}`)
           .then(response => response.json())
           .then(json => setPhotosCount(json.length))
           .catch(error => console.error(error))
@@ -85,8 +85,8 @@ function App() {
             <th>Email</th>
             <th>Website</th>
             <th>Company name</th>
-            <th>TODOs</th>
-            <th>Pics</th>
+            <th>Number of TODOs</th>
+            <th>Number of Albums</th>
           </tr>
         </thead>
         {users && todosCount && photosCount ? (
@@ -100,7 +100,7 @@ function App() {
                   </a></td>
                 <td>{user.email}</td>
                 <td>
-                  <a href={`http://${user.website}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`http://${user?.website}`} target="_blank" rel="noopener noreferrer">
                     {user.website}
                   </a></td>
                 <td>{user.company.name}</td>

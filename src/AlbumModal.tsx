@@ -1,4 +1,4 @@
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Spinner } from 'react-bootstrap';
 import { Album } from './UserProfileModal.tsx'
 import { useEffect, useState } from 'react';
 
@@ -33,15 +33,19 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
                 <Modal.Title>{album.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div>
-                    {albumData?.map((album, index) => (
-                        <img key={index} src={album.url} />
-                    ))}
-                </div>
+                {albumData ? (
+                    <div>
+                        {albumData?.map((album, index) => (
+                            <img key={index} src={album.url} />
+                        ))}
+                    </div>
+                ) : (
+                    <Spinner animation="border" />
+                )}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHideAlbum}>
-                    Close
+                    Go back to User Profile
                 </Button>
             </Modal.Footer>
         </Modal>
