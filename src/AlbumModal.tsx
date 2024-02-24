@@ -13,7 +13,8 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
 
     const renderOverlay = (props: object, album: AlbumData) => (
         <Tooltip id="button-tooltip" {...props}>
-            {album.title}
+            <div>{album.title}</div>
+            <img alt={album.title} src={album.url} />
         </Tooltip>
     );
 
@@ -37,11 +38,13 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
                 {albumData ? (
                     <div>
                         {albumData?.map((album, index) => (
-                            <OverlayTrigger
-                                placement="bottom"
-                                overlay={(props) => renderOverlay(props, album)}>
-                                <img key={index} src={album.url} />
-                            </OverlayTrigger>
+                            <span key={index}>
+                                <OverlayTrigger
+                                    placement="bottom"
+                                    overlay={(props) => renderOverlay(props, album)}>
+                                    <img alt={album.title} src={album.thumbnailUrl} />
+                                </OverlayTrigger>
+                            </span>
                         ))}
                     </div>
                 ) : (

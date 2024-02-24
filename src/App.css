@@ -26,3 +26,12 @@ b {
 .todos:hover {
   color: #646cff !important;
 }
+
+.list-group-item.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item.list-group-item:hover {
+  color: #646cff;
+  cursor: pointer;
+}

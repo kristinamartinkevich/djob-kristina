@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { OverlayTrigger, Spinner, Table, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Placeholder, Table, Tooltip } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
 import { Album, ToDo, User } from './model';
 
@@ -90,37 +90,47 @@ function App() {
             <th>Number of Albums</th>
           </tr>
         </thead>
-        {users && todosMap && albumsMap ? (
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={index}>
-                <td>{user.id}</td>
-                <td>
-                  <a onClick={() => handleShowUserProfile(user)}>
-                    {user.username}
-                  </a></td>
-                <td>{user.email}</td>
-                <td>
-                  <a href={`http://${user?.website}`} target="_blank" rel="noopener noreferrer">
-                    {user.website}
-                  </a>
-                </td>
-                <td>{user.company.name}</td>
-                <OverlayTrigger
-                  placement="right"
-                  overlay={(props) => renderOverlay(props, user.id)}>
-                  <td className='todos'>{todosMap[user.id].length}</td>
-                </OverlayTrigger>
-                <td>{albumsMap[user.id].length}</td>
+        <tbody>
+          {users && todosMap && albumsMap ? (
+            <>
+              {users.map((user, index) => (
+                <tr key={index}>
+                  <td>{user.id}</td>
+                  <td>
+                    <a onClick={() => handleShowUserProfile(user)}>
+                      {user.username}
+                    </a></td>
+                  <td>{user.email}</td>
+                  <td>
+                    <a href={`http://${user?.website}`} target="_blank" rel="noopener noreferrer">
+                      {user.website}
+                    </a>
+                  </td>
+                  <td>{user.company.name}</td>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={(props) => renderOverlay(props, user.id)}>
+                    <td className='todos'>{todosMap[user.id].length}</td>
+                  </OverlayTrigger>
+                  <td>{albumsMap[user.id].length}</td>
+                </tr>
+              ))}
+              {pickedUser && (
+                <UserProfileModal show={showUser} onHideUserProfile={handleCloseUserProfile} user={pickedUser} />
+              )}
+            </>
+          ) : (
+            Array.from({ length: 10 }, (_, rowIndex) => (
+              <tr key={rowIndex}>
+                {Array.from({ length: 7 }, (_, colIndex) => (
+                  <td key={colIndex}>
+                    <Placeholder lg={12} />
+                  </td>
+                ))}
               </tr>
-            ))}
-            {pickedUser && (
-              <UserProfileModal show={showUser} onHideUserProfile={handleCloseUserProfile} user={pickedUser} />
-            )}
-          </tbody>
-        ) : (
-          <Spinner animation="border" />
-        )}
+            ))
+          )}
+        </tbody>
       </Table>
     </>
   )
