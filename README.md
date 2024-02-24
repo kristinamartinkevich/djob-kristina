@@ -24,8 +24,7 @@ A table listing users with the following columns
 - website : clickable opens in another tab / windows
 - compagny.name
 - nb_todos : the number of todos of the user
-- nb_albums : number of
-- user's albums
+- nb_albums : number of user's albums
 
 ### User profile page
 
@@ -36,6 +35,7 @@ A presentation of user data
 - email
 - list of the user's albums
   - each album is clickable and leads to the album page
+    
  A link takes you back to the user list
 
 ### Presentation of a photo album page
