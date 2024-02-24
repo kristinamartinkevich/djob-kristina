@@ -22,7 +22,10 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
     return (
         <Modal show={show} onHide={onHideAlbum}>
             <Modal.Header>
-                <Modal.Title>{album.title}</Modal.Title>
+                <Modal.Title><b>{album.title}</b></Modal.Title>
+                <Button variant="secondary" onClick={onHideAlbum}>
+                    Go back to User Profile
+                </Button>
             </Modal.Header>
             <Modal.Body>
                 {albumData ? (
@@ -35,11 +38,6 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
                     <Spinner animation="border" />
                 )}
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={onHideAlbum}>
-                    Go back to User Profile
-                </Button>
-            </Modal.Footer>
         </Modal>
     );
 };

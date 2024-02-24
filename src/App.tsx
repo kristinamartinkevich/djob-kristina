@@ -7,8 +7,8 @@ import { Album, ToDo, User } from './model';
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
-  const [todosCountMap, setTodosCountMap] = useState<{ [key: number]: number }>({});
-  const [photosCountMap, setPhotosCountMap] = useState<{ [key: number]: number }>({});
+  const [todosCountMap, setTodosCountMap] = useState<{ [key: number]: number } | undefined>();
+  const [photosCountMap, setPhotosCountMap] = useState<{ [key: number]: number } | undefined>();
   const [pickedUser, setPickedUser] = useState<User>();
 
   const [showUser, setShowUser] = useState(false);

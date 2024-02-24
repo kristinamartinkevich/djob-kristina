@@ -10,7 +10,7 @@ interface UserProfileProps {
 }
 
 const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile, user }) => {
-    const [albums, setAlbums] = useState<Album[]>([]);
+    const [albums, setAlbums] = useState<Album[] | undefined>();
     const [pickedAlbum, setPickedAlbum] = useState<Album>();
     const [showAlbum, setShowAlbum] = useState(false);
 
@@ -34,14 +34,16 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
     return (
         <Modal show={show} onHide={onHideUserProfile}>
             <Modal.Header>
-                <Modal.Title>{user.username}</Modal.Title>
+                <Modal.Title>User Profile of <b>{user.username}</b></Modal.Title>
+                <Button variant="secondary" onClick={onHideUserProfile}>
+                    Go back to Users list
+                </Button>
             </Modal.Header>
             <Modal.Body>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Username</th>
                             <th>Email</th>
                             <th>Albums</th>
                         </tr>
@@ -49,7 +51,6 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                     <tbody>
                         <tr>
                             <td>{user.name}</td>
-                            <td>{user.username}</td>
                             <td>{user.email}</td>
                             <td>
                                 {albums ? (
@@ -71,11 +72,6 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                     </tbody>
                 </Table>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={onHideUserProfile}>
-                    Go back to Users list
-                </Button>
-            </Modal.Footer>
         </Modal>
     );
 };
