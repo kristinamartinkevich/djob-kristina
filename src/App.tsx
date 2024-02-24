@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { Spinner, Table } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
-import { User } from './model';
+import { Album, ToDo, User } from './model';
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
@@ -45,15 +45,15 @@ function App() {
       ));
 
       const todosCountMapData: { [key: number]: number } = {};
-      todosResponse.forEach((todos: any[], index) => {
+      todosResponse.forEach((todos: ToDo[], index) => {
         const userId = users[index].id;
         todosCountMapData[userId] = todos.length;
       });
 
       const photosCountMapData: { [key: number]: number } = {};
-      albumsResponse.forEach((photos: any[], index) => {
+      albumsResponse.forEach((albums: Album[], index) => {
         const userId = users[index].id;
-        photosCountMapData[userId] = photos.length;
+        photosCountMapData[userId] = albums.length;
       });
 
       setTodosCountMap(todosCountMapData);
