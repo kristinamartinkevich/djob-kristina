@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { Spinner, Table } from 'react-bootstrap';
+import { OverlayTrigger, Spinner, Table, Tooltip } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
 import { Album, ToDo, User } from './model';
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
-  const [todosCountMap, setTodosCountMap] = useState<{ [key: number]: number } | undefined>();
-  const [photosCountMap, setPhotosCountMap] = useState<{ [key: number]: number } | undefined>();
+  const [todosMap, setTodosMap] = useState<{ [key: number]: ToDo[] } | undefined>();
+  const [albumsMap, setAlbumsMap] = useState<{ [key: number]: Album[] } | undefined>();
   const [pickedUser, setPickedUser] = useState<User>();
 
   const [showUser, setShowUser] = useState(false);
@@ -22,6 +22,17 @@ function App() {
     setPickedUser(user);
     setShowUser(true);
   }
+
+  const renderOverlay = (props: object, userId: number) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <ol>
+        {todosMap && todosMap[userId]?.map((todo: ToDo, index: number) => (
+          <li key={index}>
+            <div className='text-truncate'>{todo.title}</div></li>
+        ))}
+      </ol>
+    </Tooltip>
+  );
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
@@ -45,19 +56,19 @@ function App() {
         ))
       ]);
 
-      const todosCountMapData: { [key: number]: number } = {};
-      const photosCountMapData: { [key: number]: number } = {};
+      const todosMapData: { [key: number]: ToDo[] } = {};
+      const photosMapData: { [key: number]: Album[] } = {};
 
       todosResponse.forEach((todos: ToDo[], index: number) => {
-        todosCountMapData[users[index].id] = todos.length;
+        todosMapData[users[index].id] = todos;
       });
 
       albumsResponse.forEach((albums: Album[], index: number) => {
-        photosCountMapData[users[index].id] = albums.length;
+        photosMapData[users[index].id] = albums;
       });
 
-      setTodosCountMap(todosCountMapData);
-      setPhotosCountMap(photosCountMapData);
+      setTodosMap(todosMapData);
+      setAlbumsMap(photosMapData);
     };
 
     if (users.length > 0) {
@@ -79,7 +90,7 @@ function App() {
             <th>Number of Albums</th>
           </tr>
         </thead>
-        {users && todosCountMap && photosCountMap ? (
+        {users && todosMap && albumsMap ? (
           <tbody>
             {users.map((user, index) => (
               <tr key={index}>
@@ -92,10 +103,15 @@ function App() {
                 <td>
                   <a href={`http://${user?.website}`} target="_blank" rel="noopener noreferrer">
                     {user.website}
-                  </a></td>
+                  </a>
+                </td>
                 <td>{user.company.name}</td>
-                <td>{todosCountMap[user.id]}</td>
-                <td>{photosCountMap[user.id]}</td>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={(props) => renderOverlay(props, user.id)}>
+                  <td className='todos'>{todosMap[user.id].length}</td>
+                </OverlayTrigger>
+                <td>{albumsMap[user.id].length}</td>
               </tr>
             ))}
             {pickedUser && (

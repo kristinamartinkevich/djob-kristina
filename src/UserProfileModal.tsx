@@ -1,4 +1,4 @@
-import { Button, Modal, Spinner, Table } from 'react-bootstrap';
+import { Button, ListGroup, Modal, Spinner, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import AlbumModal from './AlbumModal.tsx';
 import { Album, User } from './model.ts';
@@ -32,11 +32,11 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
     }, [user]);
 
     return (
-        <Modal show={show} onHide={onHideUserProfile}>
+        <Modal size="lg" show={show} onHide={onHideUserProfile}>
             <Modal.Header>
                 <Modal.Title>User Profile of <b>{user.username}</b></Modal.Title>
-                <Button variant="secondary" onClick={onHideUserProfile}>
-                    Go back to Users list
+                <Button variant="outline-secondary" onClick={onHideUserProfile}>
+                    ← Users list
                 </Button>
             </Modal.Header>
             <Modal.Body>
@@ -54,13 +54,13 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                             <td>{user.email}</td>
                             <td>
                                 {albums ? (
-                                    <ol>
+                                    <ListGroup as="ol" numbered>
                                         {albums.map((album, index) => (
-                                            <li key={index}>
-                                                <a onClick={() => handleShowAlbum(album)}>{album.title}</a>
-                                            </li>
+                                            <ListGroup.Item as="li" key={index} action onClick={() => handleShowAlbum(album)}>
+                                                {album.title}
+                                            </ListGroup.Item>
                                         ))}
-                                    </ol>
+                                    </ListGroup>
                                 ) : (
                                     <Spinner animation="border" />
                                 )}
@@ -72,7 +72,7 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                     </tbody>
                 </Table>
             </Modal.Body>
-        </Modal>
+        </Modal >
     );
 };
 

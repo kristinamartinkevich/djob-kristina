@@ -22,3 +22,7 @@ a:hover {
 b {
   color: #646cff !important;
 }
+
+.todos:hover {
+  color: #646cff !important;
+}
