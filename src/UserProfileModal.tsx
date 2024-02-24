@@ -1,4 +1,4 @@
-import { Button, ListGroup, Modal, Spinner, Table } from 'react-bootstrap';
+import { Button, Col, ListGroup, Modal, Row, Spinner, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import AlbumModal from './AlbumModal.tsx';
 import { Album, User } from './model.ts';
@@ -40,38 +40,34 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                 </Button>
             </Modal.Header>
             <Modal.Body>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Albums</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>
-                                {albums ? (
-                                    <ListGroup as="ol" numbered>
-                                        {albums.map((album, index) => (
-                                            <ListGroup.Item as="li" key={index} action onClick={() => handleShowAlbum(album)}>
-                                                {album.title}
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                ) : (
-                                    <Spinner animation="border" />
-                                )}
-                            </td>
-                            {pickedAlbum && (
-                                <AlbumModal show={showAlbum} onHideAlbum={handleCloseAlbum} album={pickedAlbum} />
-                            )}
-                        </tr>
-                    </tbody>
-                </Table>
-            </Modal.Body>
+                <Row>
+                    <Col lg="auto">
+                        <ListGroup>
+                            <ListGroup.Item><b>Name</b></ListGroup.Item>
+                            <ListGroup.Item>{user.name}</ListGroup.Item>
+                            <ListGroup.Item> <b>E-mail</b></ListGroup.Item>
+                            <ListGroup.Item> <div>{user.email}</div></ListGroup.Item>
+                        </ListGroup>
+                    </Col>
+                    <Col>
+                        {albums ? (
+                            <ListGroup>
+                                <ListGroup.Item><b>Albums</b></ListGroup.Item>
+                                {albums.map((album) => (
+                                    <ListGroup.Item className='albums' as="li" key={album.id} action onClick={() => handleShowAlbum(album)}>
+                                        {album.title}
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        ) : (
+                            <Spinner animation="border" />
+                        )}
+                        {pickedAlbum && (
+                            <AlbumModal show={showAlbum} onHideAlbum={handleCloseAlbum} album={pickedAlbum} />
+                        )}
+                    </Col>
+                </Row>
+            </Modal.Body >
         </Modal >
     );
 };

@@ -5,8 +5,12 @@
   text-align: center;
 }
 
-img {
-  width: 50px;
+.thumbnail {
+  width: 85px;
+}
+
+.photo {
+  width: 125px;
 }
 
 a {
@@ -23,15 +27,11 @@ b {
   color: #646cff !important;
 }
 
-.todos:hover {
-  color: #646cff !important;
-}
-
-.list-group-item.list-group-item {
+.albums {
   cursor: pointer;
 }
 
-.list-group-item.list-group-item:hover {
+.albums:hover {
   color: #646cff;
   cursor: pointer;
 }

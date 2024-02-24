@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { OverlayTrigger, Placeholder, Table, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Placeholder, Popover, Table } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
 import { Album, ToDo, User } from './model';
 
@@ -22,17 +22,6 @@ function App() {
     setPickedUser(user);
     setShowUser(true);
   }
-
-  const renderOverlay = (props: object, userId: number) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <ol>
-        {todosMap && todosMap[userId]?.map((todo: ToDo, index: number) => (
-          <li key={index}>
-            <div className='text-truncate'>{todo.title}</div></li>
-        ))}
-      </ol>
-    </Tooltip>
-  );
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
@@ -86,15 +75,15 @@ function App() {
             <th>Email</th>
             <th>Website</th>
             <th>Company name</th>
-            <th>Number of TODOs</th>
-            <th>Number of Albums</th>
+            <th>TODOs</th>
+            <th>Albums</th>
           </tr>
         </thead>
         <tbody>
           {users && todosMap && albumsMap ? (
             <>
-              {users.map((user, index) => (
-                <tr key={index}>
+              {users.map((user) => (
+                <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>
                     <a onClick={() => handleShowUserProfile(user)}>
@@ -109,8 +98,20 @@ function App() {
                   <td>{user.company.name}</td>
                   <OverlayTrigger
                     placement="right"
-                    overlay={(props) => renderOverlay(props, user.id)}>
-                    <td className='todos'>{todosMap[user.id].length}</td>
+                    overlay={
+                      <Popover>
+                        <Popover.Header as="h3">ToDos of <b>{user.username}</b></Popover.Header>
+                        <Popover.Body>
+                          <ol>
+                            {todosMap && todosMap[user.id]?.map((todo: ToDo) => (
+                              <li key={todo.id}>
+                                <div className='text-truncate'>{todo.title}</div></li>
+                            ))}
+                          </ol>
+                        </Popover.Body>
+                      </Popover>}
+                  >
+                    <td>{todosMap[user.id].length}</td>
                   </OverlayTrigger>
                   <td>{albumsMap[user.id].length}</td>
                 </tr>
