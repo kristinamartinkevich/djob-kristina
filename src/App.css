@@ -14,3 +14,11 @@ a {
   color: #646cff !important;
   cursor: pointer;
 }
+
+a:hover {
+  text-decoration: underline !important;
+}
+
+b {
+  color: #646cff !important;
+}

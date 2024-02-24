@@ -22,7 +22,7 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
     return (
         <Modal show={show} onHide={onHideAlbum}>
             <Modal.Header>
-                <Modal.Title><b>{album.title}</b></Modal.Title>
+                <Modal.Title>Album <b>{album.title}</b></Modal.Title>
                 <Button variant="secondary" onClick={onHideAlbum}>
                     Go back to User Profile
                 </Button>
