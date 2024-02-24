@@ -32,28 +32,28 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const todosResponse = await Promise.all(users.map(user =>
-        fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user?.id}`)
-          .then(response => response.json())
-          .catch(error => console.error(error))
-      ));
-
-      const albumsResponse = await Promise.all(users.map(user =>
-        fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
-          .then(response => response.json())
-          .catch(error => console.error(error))
-      ));
+      const [todosResponse, albumsResponse] = await Promise.all([
+        Promise.all(users.map(user =>
+          fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user?.id}`)
+            .then(response => response.json())
+            .catch(error => console.error(error))
+        )),
+        Promise.all(users.map(user =>
+          fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
+            .then(response => response.json())
+            .catch(error => console.error(error))
+        ))
+      ]);
 
       const todosCountMapData: { [key: number]: number } = {};
-      todosResponse.forEach((todos: ToDo[], index) => {
-        const userId = users[index].id;
-        todosCountMapData[userId] = todos.length;
+      const photosCountMapData: { [key: number]: number } = {};
+
+      todosResponse.forEach((todos: ToDo[], index: number) => {
+        todosCountMapData[users[index].id] = todos.length;
       });
 
-      const photosCountMapData: { [key: number]: number } = {};
-      albumsResponse.forEach((albums: Album[], index) => {
-        const userId = users[index].id;
-        photosCountMapData[userId] = albums.length;
+      albumsResponse.forEach((albums: Album[], index: number) => {
+        photosCountMapData[users[index].id] = albums.length;
       });
 
       setTodosCountMap(todosCountMapData);
