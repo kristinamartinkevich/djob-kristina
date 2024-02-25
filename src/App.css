@@ -35,3 +35,11 @@ b {
   color: #646cff;
   cursor: pointer;
 }
+
+.red {
+  color: #FF646C !important;
+}
+
+.green {
+  color: #6CFF64 !important;
+}

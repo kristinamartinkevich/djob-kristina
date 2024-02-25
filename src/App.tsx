@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { OverlayTrigger, Placeholder, Popover, Table } from 'react-bootstrap';
+import { Form, Overlay, Placeholder, Table, Tooltip } from 'react-bootstrap';
 import UserProfileModal from './UserProfileModal';
 import { Album, ToDo, User } from './model';
 
@@ -12,6 +12,9 @@ function App() {
   const [pickedUser, setPickedUser] = useState<User>();
 
   const [showUser, setShowUser] = useState(false);
+
+  const [showToDos, setShowToDos] = useState(false);
+  const target = useRef(null);
 
   function handleCloseUserProfile() {
     setPickedUser(undefined);
@@ -29,6 +32,27 @@ function App() {
       .then(json => setUsers(json))
       .catch(error => console.error(error));
   }, []);
+
+  function handleToDoCheckChange(userId: number, todoId: number) {
+    setTodosMap(prevTodosMap => {
+      if (!prevTodosMap) {
+        return prevTodosMap;
+      }
+
+      return {
+        ...prevTodosMap,
+        [userId]: prevTodosMap[userId].map(todo => {
+          if (todo.id === todoId) {
+            return {
+              ...todo,
+              completed: !todo.completed
+            };
+          }
+          return todo;
+        })
+      };
+    });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,6 +89,19 @@ function App() {
     }
   }, [users]);
 
+  const changeTodo = async (todo: ToDo) => {
+    fetch(`https://jsonplaceholder.typicode.com/todos/${todo.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        completed: !todo.completed
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then((response) => response.json())
+  };
+
   return (
     <>
       <Table striped bordered hover>
@@ -96,23 +133,36 @@ function App() {
                     </a>
                   </td>
                   <td>{user.company.name}</td>
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={
-                      <Popover>
-                        <Popover.Header as="h3">ToDos of <b>{user.username}</b></Popover.Header>
-                        <Popover.Body>
+                  <>
+                    <Overlay target={target.current} show={showToDos} placement="right">
+                      {(props) => (
+                        <Tooltip id="overlay-example" {...props}>
                           <ol>
                             {todosMap && todosMap[user.id]?.map((todo: ToDo) => (
                               <li key={todo.id}>
-                                <div className='text-truncate'>{todo.title}</div></li>
+                                <div className={`text-truncate d-flex fw-bold ${todo.completed ? 'green' : 'red'}`}>
+                                  <Form.Check
+                                    className='mx-2'
+                                    type="checkbox"
+                                    checked={todo.completed}
+                                    onChange={() => handleToDoCheckChange(user.id, todo.id)}
+                                    onClick={() => changeTodo(todo)}
+                                  />{todo.title}</div></li>
                             ))}
                           </ol>
-                        </Popover.Body>
-                      </Popover>}
-                  >
-                    <td>{todosMap[user.id].length}</td>
-                  </OverlayTrigger>
+                        </Tooltip>
+                      )}
+                    </Overlay>
+                  </>
+                  <td className='purple'>
+                    <span className='mx-2'>
+                      {todosMap[user.id].length}
+                    </span>
+                    <a ref={target} onClick={() => setShowToDos(!showToDos)}>
+                      {!showToDos ? 'open' : 'close'}
+                    </a>
+                  </td>
+
                   <td>{albumsMap[user.id].length}</td>
                 </tr>
               ))}
