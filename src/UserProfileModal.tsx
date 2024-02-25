@@ -1,4 +1,4 @@
-import { Button, Col, ListGroup, Modal, Row, Spinner, Table } from 'react-bootstrap';
+import { Button, Col, ListGroup, Modal, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import AlbumModal from './AlbumModal.tsx';
 import { Album, User } from './model.ts';
@@ -28,7 +28,7 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
         fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
             .then(response => response.json())
             .then(json => setAlbums(json))
-            .catch(error => console.error(error));
+            .catch(error => console.error('Album of user fetch call error:', error))
     }, [user]);
 
     return (
@@ -54,7 +54,7 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                             <ListGroup>
                                 <ListGroup.Item><b>Albums</b></ListGroup.Item>
                                 {albums.map((album) => (
-                                    <ListGroup.Item className='albums' as="li" key={album.id} action onClick={() => handleShowAlbum(album)}>
+                                    <ListGroup.Item as="li" key={album.id} action onClick={() => handleShowAlbum(album)}>
                                         {album.title}
                                     </ListGroup.Item>
                                 ))}

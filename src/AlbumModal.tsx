@@ -1,4 +1,4 @@
-import { Button, Modal, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Image, Modal, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { Album, Photo } from './model.ts';
 
@@ -12,24 +12,28 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
     const [photos, setPhotos] = useState<Photo[]>();
 
     const renderOverlay = (props: object, album: Photo) => (
-        <Tooltip {...props}>
-            <div>{album.title}</div>
-            <img alt={album.title} src={album.url} className='photo' />
-        </Tooltip>
+        <Popover {...props}>
+            <Popover.Header as="h3">{album.title}</Popover.Header>
+            <Popover.Body>
+                <Row className='justify-content-center'>
+                    <img alt={album.title} src={album.url} className='photo' />
+                </Row>
+            </Popover.Body>
+        </Popover>
     );
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${album?.id}`)
             .then(response => response.json())
             .then(json => setPhotos(json))
-            .catch(error => console.error(error));
+            .catch(error => console.error('Album fetch call error:', error))
     }, [album]);
 
 
     return (
         <Modal size="lg" show={show} onHide={onHideAlbum}>
             <Modal.Header>
-                <Modal.Title>Album "<b>{album.title}</b>"</Modal.Title>
+                <Modal.Title>Album <b>{album.title}</b></Modal.Title>
                 <Button variant="outline-secondary" onClick={onHideAlbum}>
                     ← User Profile
                 </Button>
@@ -40,9 +44,8 @@ const AlbumModal: React.FC<AlbumDataProps> = ({ show, onHideAlbum, album }) => {
                         {photos?.map((photo) => (
                             <span key={photo.id}>
                                 <OverlayTrigger
-                                    placement="bottom"
                                     overlay={(props) => renderOverlay(props, photo)}>
-                                    <img alt={photo.title} src={photo.thumbnailUrl} className='thumbnail' />
+                                    <Image alt={photo.title} src={photo.thumbnailUrl} thumbnail />
                                 </OverlayTrigger>
                             </span>
                         ))}

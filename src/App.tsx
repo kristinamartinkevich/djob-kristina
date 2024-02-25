@@ -13,7 +13,7 @@ function App() {
 
   const [showUser, setShowUser] = useState(false);
 
-  const [showToDos, setShowToDos] = useState(false);
+  const [showToDos, setShowToDos] = useState<{ [key: number]: boolean }>({});
   const target = useRef(null);
 
   function handleCloseUserProfile() {
@@ -30,7 +30,7 @@ function App() {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
       .then(json => setUsers(json))
-      .catch(error => console.error(error));
+      .catch(error => console.error('Users list fetch call error:', error))
   }, []);
 
   function handleToDoCheckChange(userId: number, todoId: number) {
@@ -60,12 +60,12 @@ function App() {
         Promise.all(users.map(user =>
           fetch(`https://jsonplaceholder.typicode.com/todos?userId=${user?.id}`)
             .then(response => response.json())
-            .catch(error => console.error(error))
+            .catch(error => console.error('Todo list fetch call error:', error))
         )),
         Promise.all(users.map(user =>
           fetch(`https://jsonplaceholder.typicode.com/albums?userId=${user?.id}`)
             .then(response => response.json())
-            .catch(error => console.error(error))
+            .catch(error => console.error('Album list fetch call error:', error))
         ))
       ]);
 
@@ -74,6 +74,7 @@ function App() {
 
       todosResponse.forEach((todos: ToDo[], index: number) => {
         todosMapData[users[index].id] = todos;
+        showToDos[users[index].id] = false;
       });
 
       albumsResponse.forEach((albums: Album[], index: number) => {
@@ -100,7 +101,21 @@ function App() {
       },
     })
       .then((response) => response.json())
+      .catch(error => console.error('ToDo update call error:', error))
   };
+
+  function toggleShowToDos(userId: number) {
+    setShowToDos(prevShowToDos => {
+      const updatedShowToDos = { ...prevShowToDos };
+      updatedShowToDos[userId] = !prevShowToDos[userId];
+      Object.keys(updatedShowToDos).forEach(key => {
+        if (parseInt(key) !== userId) {
+          updatedShowToDos[Number(key)] = false;
+        }
+      });
+      return updatedShowToDos;
+    });
+  }
 
   return (
     <>
@@ -134,9 +149,10 @@ function App() {
                   </td>
                   <td>{user.company.name}</td>
                   <>
-                    <Overlay target={target.current} show={showToDos} placement="right">
+                    <Overlay target={target.current} show={showToDos[user.id]} placement="right">
                       {(props) => (
-                        <Tooltip id="overlay-example" {...props}>
+                        <Tooltip {...props}>
+                          ToDos of <b>{user.username}</b>
                           <ol>
                             {todosMap && todosMap[user.id]?.map((todo: ToDo) => (
                               <li key={todo.id}>
@@ -158,8 +174,8 @@ function App() {
                     <span className='mx-2'>
                       {todosMap[user.id].length}
                     </span>
-                    <a ref={target} onClick={() => setShowToDos(!showToDos)}>
-                      {!showToDos ? 'open' : 'close'}
+                    <a ref={target} onClick={() => toggleShowToDos(user.id)}>
+                      {!showToDos[user.id] ? 'Open' : 'Close'}
                     </a>
                   </td>
 
