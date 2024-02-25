@@ -102,19 +102,6 @@ function App() {
     });
   };
 
-  function toggleShowToDos(userId: number) {
-    setShowToDos(prevShowToDos => {
-      const updatedShowToDos = { ...prevShowToDos };
-      updatedShowToDos[userId] = !prevShowToDos[userId];
-      Object.keys(updatedShowToDos).forEach(key => {
-        if (parseInt(key) !== userId) {
-          updatedShowToDos[Number(key)] = false;
-        }
-      });
-      return updatedShowToDos;
-    });
-  }
-
   return (
     <>
       <Table striped bordered hover>
@@ -171,7 +158,8 @@ function App() {
                     <span className='mx-2'>
                       {todosMap[user.id].length}
                     </span>
-                    <a ref={target} onClick={() => toggleShowToDos(user.id)}>
+                    <a ref={target} className={showToDos[user.id] ? 'red' : 'green'}
+                      onClick={() => setShowToDos(prevShowToDos => ({ ...prevShowToDos, [user.id]: !prevShowToDos[user.id] }))}>
                       {!showToDos[user.id] ? 'Open' : 'Close'}
                     </a>
                   </td>
