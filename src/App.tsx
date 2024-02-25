@@ -33,27 +33,6 @@ function App() {
       .catch(error => console.error('Users list fetch call error:', error))
   }, []);
 
-  function handleToDoCheckChange(userId: number, todoId: number) {
-    setTodosMap(prevTodosMap => {
-      if (!prevTodosMap) {
-        return prevTodosMap;
-      }
-
-      return {
-        ...prevTodosMap,
-        [userId]: prevTodosMap[userId].map(todo => {
-          if (todo.id === todoId) {
-            return {
-              ...todo,
-              completed: !todo.completed
-            };
-          }
-          return todo;
-        })
-      };
-    });
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       const [todosResponse, albumsResponse] = await Promise.all([
@@ -90,7 +69,7 @@ function App() {
     }
   }, [users]);
 
-  const changeTodo = async (todo: ToDo) => {
+  const changeTodo = async (todo: ToDo, userId: number) => {
     fetch(`https://jsonplaceholder.typicode.com/todos/${todo.id}`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -102,6 +81,25 @@ function App() {
     })
       .then((response) => response.json())
       .catch(error => console.error('ToDo update call error:', error))
+
+    setTodosMap(prevTodosMap => {
+      if (!prevTodosMap) {
+        return prevTodosMap;
+      }
+
+      return {
+        ...prevTodosMap,
+        [userId]: prevTodosMap[userId].map(prevTodo => {
+          if (prevTodo.id === todo.id) {
+            return {
+              ...prevTodo,
+              completed: !prevTodo.completed
+            };
+          }
+          return prevTodo;
+        })
+      };
+    });
   };
 
   function toggleShowToDos(userId: number) {
@@ -161,8 +159,7 @@ function App() {
                                     className='mx-2'
                                     type="checkbox"
                                     checked={todo.completed}
-                                    onChange={() => handleToDoCheckChange(user.id, todo.id)}
-                                    onClick={() => changeTodo(todo)}
+                                    onChange={() => changeTodo(todo, user.id)}
                                   />{todo.title}</div></li>
                             ))}
                           </ol>
@@ -170,7 +167,7 @@ function App() {
                       )}
                     </Overlay>
                   </>
-                  <td className='purple'>
+                  <td>
                     <span className='mx-2'>
                       {todosMap[user.id].length}
                     </span>
@@ -178,7 +175,6 @@ function App() {
                       {!showToDos[user.id] ? 'Open' : 'Close'}
                     </a>
                   </td>
-
                   <td>{albumsMap[user.id].length}</td>
                 </tr>
               ))}
