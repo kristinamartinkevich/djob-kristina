@@ -45,8 +45,8 @@ const UserProfileModal: React.FC<UserProfileProps> = ({ show, onHideUserProfile,
                         <ListGroup>
                             <ListGroup.Item><b>Name</b></ListGroup.Item>
                             <ListGroup.Item>{user.name}</ListGroup.Item>
-                            <ListGroup.Item> <b>E-mail</b></ListGroup.Item>
-                            <ListGroup.Item> <div>{user.email}</div></ListGroup.Item>
+                            <ListGroup.Item><b>E-mail</b></ListGroup.Item>
+                            <ListGroup.Item><a href={`mailto:${user.email}`}>{user.email}</a></ListGroup.Item>
                         </ListGroup>
                     </Col>
                     <Col>
