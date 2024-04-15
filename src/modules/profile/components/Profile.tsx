@@ -38,35 +38,41 @@ function Profile({ }: ProfileProps) {
     }, [userId]);
 
     return (
-        <Row>
-            <Button variant="secondary" onClick={goBack}>Go Back</Button>
-            {user && (
-                <>
-                    <Col lg="auto">
-                        <ListGroup>
-                            <ListGroup.Item><b>Name</b></ListGroup.Item>
-                            <ListGroup.Item>{user.name}</ListGroup.Item>
-                            <ListGroup.Item><b>E-mail</b></ListGroup.Item>
-                            <ListGroup.Item><a href={`mailto:${user.email}`}>{user.email}</a></ListGroup.Item>
-                        </ListGroup>
-                    </Col>
-                    <Col>
-                        {albums ? (
+        <>
+            <Row className='justify-content-start mb-3'>
+                <Col lg="auto">
+                    <Button variant="secondary" onClick={goBack}>← Users List</Button>
+                </Col>
+            </Row>
+            <Row>
+                {user && (
+                    <>
+                        <Col>
                             <ListGroup>
-                                <ListGroup.Item><b>Albums</b></ListGroup.Item>
-                                {albums.map((album) => (
-                                    <ListGroup.Item as="li" key={album.id} action onClick={() => handleShowAlbum(album.id)}>
-                                        {album.title}
-                                    </ListGroup.Item>
-                                ))}
+                                <ListGroup.Item><b>Name</b></ListGroup.Item>
+                                <ListGroup.Item>{user.name}</ListGroup.Item>
+                                <ListGroup.Item><b>E-mail</b></ListGroup.Item>
+                                <ListGroup.Item><a href={`mailto:${user.email}`}>{user.email}</a></ListGroup.Item>
                             </ListGroup>
-                        ) : (
-                            <Spinner animation="border" />
-                        )}
-                    </Col>
-                </>
-            )}
-        </Row>
+                        </Col>
+                        <Col>
+                            {albums ? (
+                                <ListGroup>
+                                    <ListGroup.Item><b>Albums</b></ListGroup.Item>
+                                    {albums.map((album) => (
+                                        <ListGroup.Item className="text-start" as="li" key={album.id} action onClick={() => handleShowAlbum(album.id)}>
+                                            {album.title}
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
+                            ) : (
+                                <Spinner animation="border" />
+                            )}
+                        </Col>
+                    </>
+                )}
+            </Row>
+        </>
     );
 };
 

@@ -6,13 +6,13 @@ import useStore from '../../../store';
 import { useNavigate } from 'react-router-dom';
 
 const columnNames = [
-    "#",
-    "Username",
-    "Email",
-    "Website",
-    "Company name",
-    "TODOs",
-    "Albums"
+    '#',
+    'Username',
+    'Email',
+    'Website',
+    'Company name',
+    'TODOs',
+    'Albums'
 ];
 
 function DataTable() {
@@ -85,7 +85,7 @@ function DataTable() {
                         </td>
                         <td>{user.email}</td>
                         <td>
-                            <a href={`http://${user?.website}`} target="_blank" rel="noopener noreferrer">
+                            <a href={`http://${user?.website}`} target='_blank' rel='noopener noreferrer'>
                                 {user.website}
                             </a>
                         </td>

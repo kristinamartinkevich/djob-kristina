@@ -1,4 +1,4 @@
-import { Button, Image, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap';
+import { Button, Col, Image, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { Photo } from '../../../model/model.ts';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -34,7 +34,11 @@ function Album() {
 
     return (
         <>
-            <Button variant="secondary" onClick={goBack}>Go Back</Button>
+            <Row className='justify-content-start mb-3'>
+                <Col lg="auto">
+                    <Button variant="secondary" onClick={goBack}>← Profile</Button>
+                </Col>
+            </Row>
             {photos ? (
                 <div>
                     {photos?.map((photo) => (
