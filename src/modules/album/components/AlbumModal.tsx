@@ -1,6 +1,6 @@
 import { Button, Image, Modal, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { Album, Photo } from './model.ts';
+import { Album, Photo } from '../../../model.ts';
 
 interface AlbumDataProps {
     show: boolean;

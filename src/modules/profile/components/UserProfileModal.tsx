@@ -1,7 +1,7 @@
 import { Button, Col, ListGroup, Modal, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import AlbumModal from './AlbumModal.tsx';
-import { Album, User } from './model.ts';
+import AlbumModal from '../../album/components/AlbumModal.tsx';
+import { Album, User } from '../../../model.ts';
 
 interface UserProfileProps {
     show: boolean;
