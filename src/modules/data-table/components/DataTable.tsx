@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Table } from 'react-bootstrap';
 import Placeholders from '../../common/components/Placeholders';
-import UserProfileModal from '../../profile/components/UserProfileModal';
-import { Album, ToDo, User } from '../../../model';
+import { Album, ToDo, User } from '../../../model/model';
 import useStore from '../../../store';
+import { useNavigate } from 'react-router-dom';
 
 const columnNames = [
     "#",
@@ -16,17 +16,15 @@ const columnNames = [
 ];
 
 function DataTable() {
+    const navigate = useNavigate();
+
     const {
         users,
         todosMap,
         albumsMap,
-        pickedUser,
-        showUser,
         setUsers,
         setTodosMap,
         setAlbumsMap,
-        setPickedUser,
-        setShowUser,
     } = useStore();
 
     useEffect(() => {
@@ -35,16 +33,6 @@ function DataTable() {
             .then(json => setUsers(json))
             .catch(error => console.error('Users list fetch call error:', error))
     }, []);
-
-    function handleCloseUserProfile() {
-        setPickedUser(undefined);
-        setShowUser(false);
-    }
-
-    function handleShowUserProfile(user: User) {
-        setPickedUser(user);
-        setShowUser(true);
-    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -76,6 +64,9 @@ function DataTable() {
         }
     }, [users]);
 
+    function handleShowUserProfile(user: User) {
+        navigate(`/users/${user.id}`, { state: { user } });
+    }
 
     const populateRows = () => {
         if (!users || !todosMap || !albumsMap) {
@@ -107,9 +98,6 @@ function DataTable() {
                         <td>{albumsMap[user.id].length}</td>
                     </tr>
                 ))}
-                {pickedUser && (
-                    <UserProfileModal show={showUser} onHideUserProfile={handleCloseUserProfile} user={pickedUser} />
-                )}
             </>
         );
     };

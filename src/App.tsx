@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import DataTable from './modules/data-table/components/DataTable';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import AlbumModal from './modules/album/components/AlbumModal';
+import Album from './modules/album/components/Album';
+import UserProfile from './modules/profile/components/Profile';
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index element={<DataTable />} />
-        <Route path="album" element={<AlbumModal />} />
+        <Route path="/users/:userId" element={<UserProfile />} />
+        <Route path="/users/:userId/albums/:albumId" element={<Album />} />
       </Routes>
     </BrowserRouter>
   )
