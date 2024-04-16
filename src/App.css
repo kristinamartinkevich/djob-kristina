@@ -28,3 +28,7 @@ a:hover,
 b {
   color: #646cff !important;
 }
+
+.list-group-item {
+  text-align: start;
+}

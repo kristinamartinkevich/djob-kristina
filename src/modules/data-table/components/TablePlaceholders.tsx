@@ -1,6 +1,6 @@
 import { Placeholder } from 'react-bootstrap';
 
-function Placeholders() {
+function TablePlaceholders() {
     const length = 10;
 
     return (
@@ -16,4 +16,4 @@ function Placeholders() {
     );
 };
 
-export default Placeholders;
+export default TablePlaceholders;

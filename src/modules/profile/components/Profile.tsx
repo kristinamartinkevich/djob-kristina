@@ -1,18 +1,33 @@
-import { Button, Col, ListGroup, Row, Spinner } from 'react-bootstrap';
+import { Col, ListGroup, Row, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { Album, User } from '../../../model/model.ts';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import GoBackButton from '../../common/components/GoBackButton.tsx';
 
 interface ProfileProps {
     user?: User;
 }
 
+type Section = {
+    name: string;
+    value: string;
+}
+
 function Profile({ }: ProfileProps) {
-    const { albumId, userId } = useParams();
+    const { userId } = useParams();
     const [user, setUser] = useState<User | undefined>();
     const [albums, setAlbums] = useState<Album[] | undefined>();
+    const ProfileSections: Section[] = user ? [
+        {
+            name: 'Name',
+            value: user.name
+        },
+        {
+            name: 'E-mail',
+            value: user.email
+        }
+    ] : [];
     const navigate = useNavigate();
-
     const location = useLocation();
 
     useEffect(() => {
@@ -22,13 +37,9 @@ function Profile({ }: ProfileProps) {
         }
     }, [location]);
 
-    function handleShowAlbum(albumId: number) {
+    const handleShowAlbum = (albumId: number) => {
         navigate(`/users/${userId}/albums/${albumId}`);
     }
-
-    const goBack = () => {
-        navigate(-1);
-    };
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/albums?userId=${userId}`)
@@ -39,39 +50,34 @@ function Profile({ }: ProfileProps) {
 
     return (
         <>
-            <Row className='justify-content-start mb-3'>
-                <Col lg="auto">
-                    <Button variant="secondary" onClick={goBack}>← Users List</Button>
-                </Col>
-            </Row>
-            <Row>
-                {user && (
-                    <>
-                        <Col>
+            <GoBackButton />
+            {user && (
+                <Row>
+                    <Col>
+                        <ListGroup>
+                            {ProfileSections.map((section: Section, index: number) => (
+                                <ListGroup.Item key={index}>
+                                    <b>{section.name}</b>: {section.value}
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                    </Col>
+                    <Col>
+                        {albums ? (
                             <ListGroup>
-                                <ListGroup.Item><b>Name</b></ListGroup.Item>
-                                <ListGroup.Item>{user.name}</ListGroup.Item>
-                                <ListGroup.Item><b>E-mail</b></ListGroup.Item>
-                                <ListGroup.Item><a href={`mailto:${user.email}`}>{user.email}</a></ListGroup.Item>
+                                <ListGroup.Item><b>Albums</b></ListGroup.Item>
+                                {albums.map((album: Album) => (
+                                    <ListGroup.Item key={album.id} action onClick={() => handleShowAlbum(album.id)}>
+                                        {album.title}
+                                    </ListGroup.Item>
+                                ))}
                             </ListGroup>
-                        </Col>
-                        <Col>
-                            {albums ? (
-                                <ListGroup>
-                                    <ListGroup.Item><b>Albums</b></ListGroup.Item>
-                                    {albums.map((album) => (
-                                        <ListGroup.Item className="text-start" as="li" key={album.id} action onClick={() => handleShowAlbum(album.id)}>
-                                            {album.title}
-                                        </ListGroup.Item>
-                                    ))}
-                                </ListGroup>
-                            ) : (
-                                <Spinner animation="border" />
-                            )}
-                        </Col>
-                    </>
-                )}
-            </Row>
+                        ) : (
+                            <Spinner animation="border" />
+                        )}
+                    </Col>
+                </Row>
+            )}
         </>
     );
 };

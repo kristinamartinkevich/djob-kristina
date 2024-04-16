@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Table } from 'react-bootstrap';
-import Placeholders from '../../common/components/Placeholders';
+import TablePlaceholders from './TablePlaceholders';
 import { Album, ToDo, User } from '../../../model/model';
 import useStore from '../../../store';
 import { useNavigate } from 'react-router-dom';
@@ -45,37 +45,42 @@ function DataTable() {
                     .catch(error => console.error('Album list fetch call error:', error))
             ]);
 
-            const todosMapData: { [key: number]: ToDo[] } = {};
-            const photosMapData: { [key: number]: Album[] } = {};
-
-            users.forEach(user => {
-                const userTodos = todosResponse.filter((todo: ToDo) => todo.userId === user.id);
-                const userAlbums = albumsResponse.filter((album: Album) => album.userId === user.id);
-
-                todosMapData[user.id] = userTodos;
-                photosMapData[user.id] = userAlbums;
-            });
-
-            setTodosMap(todosMapData);
-            setAlbumsMap(photosMapData);
+            processResponse(todosResponse, albumsResponse)
         };
+
         if (users.length > 0) {
             fetchData();
         }
     }, [users]);
 
-    function handleShowUserProfile(user: User) {
+    const processResponse = (todosResponse: ToDo[], albumsResponse: Album[]) => {
+        const todosMapData: { [key: number]: ToDo[] } = {};
+        const photosMapData: { [key: number]: Album[] } = {};
+
+        users.forEach(user => {
+            const userTodos = todosResponse.filter((todo: ToDo) => todo.userId === user.id);
+            const userAlbums = albumsResponse.filter((album: Album) => album.userId === user.id);
+
+            todosMapData[user.id] = userTodos;
+            photosMapData[user.id] = userAlbums;
+        });
+
+        setTodosMap(todosMapData);
+        setAlbumsMap(photosMapData);
+    };
+
+    const handleShowUserProfile = (user: User) => {
         navigate(`/users/${user.id}`, { state: { user } });
     }
 
     const populateRows = () => {
         if (!users || !todosMap || !albumsMap) {
-            return <Placeholders />;
+            return <TablePlaceholders />;
         }
 
         return (
             <>
-                {users.map((user) => (
+                {users.map((user: User) => (
                     <tr key={user.id}>
                         <td>{user.id}</td>
                         <td>
@@ -85,16 +90,12 @@ function DataTable() {
                         </td>
                         <td>{user.email}</td>
                         <td>
-                            <a href={`http://${user?.website}`} target='_blank' rel='noopener noreferrer'>
+                            <a href={`http://${user.website}`} target='_blank' rel='noopener noreferrer'>
                                 {user.website}
                             </a>
                         </td>
                         <td>{user.company.name}</td>
-                        <td>
-                            <span className='mx-2'>
-                                {todosMap[user.id].length}
-                            </span>
-                        </td>
+                        <td>{todosMap[user.id].length}</td>
                         <td>{albumsMap[user.id].length}</td>
                     </tr>
                 ))}
@@ -107,7 +108,7 @@ function DataTable() {
         <Table striped bordered hover responsive>
             <thead>
                 <tr>
-                    {columnNames.map((name, index) => (
+                    {columnNames.map((name: string, index: number) => (
                         <th key={index}>{name}</th>
                     ))}
                 </tr>
