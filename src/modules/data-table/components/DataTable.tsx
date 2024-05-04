@@ -4,6 +4,8 @@ import TablePlaceholders from './TablePlaceholders';
 import { Album, ToDo, User } from '../../../model/model';
 import useStore from '../../../store';
 import { useNavigate } from 'react-router-dom';
+import { fetchTodosAndAlbums, fetchUsers } from '../../../utils/apiService';
+
 
 const columnNames = [
     '#',
@@ -28,26 +30,16 @@ function DataTable() {
     } = useStore();
 
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(response => response.json())
-            .then(json => setUsers(json))
-            .catch(error => console.error('Users list fetch call error:', error))
-    }, []);
+        fetchUsers()
+            .then(users => setUsers(users))
+    });
+
+    const fetchData = async () => {
+        const { todosResponse, albumsResponse } = await fetchTodosAndAlbums();
+        processResponse(todosResponse, albumsResponse);
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const [todosResponse, albumsResponse] = await Promise.all([
-                fetch(`https://jsonplaceholder.typicode.com/todos`)
-                    .then(response => response.json())
-                    .catch(error => console.error('Todo list fetch call error:', error)),
-                fetch(`https://jsonplaceholder.typicode.com/albums`)
-                    .then(response => response.json())
-                    .catch(error => console.error('Album list fetch call error:', error))
-            ]);
-
-            processResponse(todosResponse, albumsResponse)
-        };
-
         if (users.length > 0) {
             fetchData();
         }

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Photo } from '../../../model/model.ts';
 import { useParams } from 'react-router-dom';
 import GoBackButton from '../../common/components/GoBackButton.tsx';
+import { fetchPhotos } from '../../../utils/apiService.tsx';
 
 function Album() {
     const { albumId } = useParams();
@@ -20,10 +21,10 @@ function Album() {
     );
 
     useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${albumId}`)
-            .then(response => response.json())
-            .then(json => setPhotos(json))
-            .catch(error => console.error('Album fetch call error:', error))
+        if (albumId) {
+            fetchPhotos(albumId)
+                .then(album => setPhotos(album));
+        }
     }, [albumId]);
 
     return (

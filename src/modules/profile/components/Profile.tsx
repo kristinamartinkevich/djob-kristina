@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Album, User } from '../../../model/model.ts';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GoBackButton from '../../common/components/GoBackButton.tsx';
+import { fetchAlbum } from '../../../utils/apiService.tsx';
 
 interface ProfileProps {
     user?: User;
@@ -42,10 +43,10 @@ function Profile({ }: ProfileProps) {
     }
 
     useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/albums?userId=${userId}`)
-            .then(response => response.json())
-            .then(json => setAlbums(json))
-            .catch(error => console.error('Album of user fetch call error:', error))
+        if (userId) {
+            fetchAlbum(userId)
+                .then(album => setAlbums(album));
+        }
     }, [userId]);
 
     return (
