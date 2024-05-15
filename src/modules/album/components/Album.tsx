@@ -1,13 +1,14 @@
 import { Col, Container, Image, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Photo } from '../../../model/model.ts';
 import { useParams } from 'react-router-dom';
 import GoBackButton from '../../common/components/GoBackButton.tsx';
 import { fetchPhotos } from '../../../utils/apiService.tsx';
+import useStore from '../../../store.ts';
 
 function Album() {
     const { albumId } = useParams();
-    const [photos, setPhotos] = useState<Photo[]>();
+    const { setPhotos, photos } = useStore();
 
     const renderOverlay = (props: object, album: Photo) => (
         <Popover {...props}>

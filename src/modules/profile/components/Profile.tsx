@@ -1,9 +1,10 @@
 import { Col, ListGroup, Row, Spinner } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Album, User } from '../../../model/model.ts';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GoBackButton from '../../common/components/GoBackButton.tsx';
 import { fetchAlbum } from '../../../utils/apiService.tsx';
+import useStore from '../../../store.ts';
 
 interface ProfileProps {
     user?: User;
@@ -16,8 +17,7 @@ type Section = {
 
 function Profile({ }: ProfileProps) {
     const { userId } = useParams();
-    const [user, setUser] = useState<User | undefined>();
-    const [albums, setAlbums] = useState<Album[] | undefined>();
+    const { user, setUser, albums, setAlbums } = useStore();
     const ProfileSections: Section[] = user ? [
         {
             name: 'Name',
